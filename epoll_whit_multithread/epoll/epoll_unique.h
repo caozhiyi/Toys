@@ -10,7 +10,7 @@ public:
     virtual void Loop();
 
     virtual void OnAccet(uint64_t sock);
-private:
+protected:
     static int32_t _unique_epoll_handler;
 };
 

@@ -21,7 +21,13 @@ UniqueListenerMultiEpollSrc = unique_listener_multi_epoll.cpp
 UniqueListenerUniqueEpoll = unique_listener_unique_epoll
 UniqueListenerUniqueEpollSrc = unique_listener_unique_epoll.cpp
 
-all: $(ReusePortMultiEpoll) $(ReusePortUniqueEpoll) $(UniqueListenerMultiEpoll) $(UniqueListenerUniqueEpoll)
+UniqueListenerMultiExclusiveEpoll = unique_listener_multi_exclusive_epoll
+UniqueListenerMultiExclusiveEpollSrc = unique_listener_multi_exclusive_epoll.cpp
+
+UniqueListenerUniqueExclusiveEpoll = unique_listener_unique_exclusive_epoll
+UniqueListenerUniqueExclusiveEpollSrc = unique_listener_unique_exclusive_epoll.cpp
+
+all: $(ReusePortMultiEpoll) $(ReusePortUniqueEpoll) $(UniqueListenerMultiEpoll) $(UniqueListenerUniqueEpoll) $(UniqueListenerMultiExclusiveEpoll) $(UniqueListenerUniqueExclusiveEpoll)
 
 $(ReusePortMultiEpoll):$(OBJS) $(ReusePortMultiEpollSrc)
 	$(CC) $^ -o $@  $(TARGET)  $(CCFLAGS) $(INCLUDES)
@@ -35,8 +41,14 @@ $(UniqueListenerMultiEpoll):$(OBJS) $(UniqueListenerMultiEpollSrc)
 $(UniqueListenerUniqueEpoll):$(OBJS) $(UniqueListenerUniqueEpollSrc)
 	$(CC) $^ -o $@  $(TARGET)  $(CCFLAGS) $(INCLUDES)
 
+$(UniqueListenerMultiExclusiveEpoll):$(OBJS) $(UniqueListenerMultiExclusiveEpollSrc)
+	$(CC) $^ -o $@  $(TARGET)  $(CCFLAGS) $(INCLUDES)
+
+$(UniqueListenerUniqueExclusiveEpoll):$(OBJS) $(UniqueListenerUniqueExclusiveEpollSrc)
+	$(CC) $^ -o $@  $(TARGET)  $(CCFLAGS) $(INCLUDES)
+
 %.o : %.cpp
 	$(CC) -c $< -o $@ $(CCFLAGS) $(INCLUDES) 
 
 clean:
-	rm -rf $(OBJS) *.o $(ReusePortMultiEpoll) $(ReusePortUniqueEpoll) $(UniqueListenerMultiEpoll) $(UniqueListenerUniqueEpoll)
+	rm -rf $(OBJS) *.o $(ReusePortMultiEpoll) $(ReusePortUniqueEpoll) $(UniqueListenerMultiEpoll) $(UniqueListenerUniqueEpoll) $(UniqueListenerMultiExclusiveEpoll) $(UniqueListenerUniqueExclusiveEpoll)

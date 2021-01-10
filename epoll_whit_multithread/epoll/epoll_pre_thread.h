@@ -14,7 +14,7 @@ public:
 
     virtual void OnAccet(uint64_t sock);
 
-private:
+protected:
     int32_t _epoll_handler;
 };
 

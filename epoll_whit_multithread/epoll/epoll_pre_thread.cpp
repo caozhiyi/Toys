@@ -28,7 +28,7 @@ bool CEpollPerThread::AddListener(uint64_t sock) {
     event->events |= EPOLLIN|EPOLLOUT|EPOLLRDHUP;
     int res = epoll_ctl(_epoll_handler, EPOLL_CTL_ADD, sock, event);
     if (res == -1) {
-        std::cout << "remove event from epoll faild! error " << std::endl;
+        std::cout << "add event to epoll faild! error " << errno << std::endl;
         return false;
     }
     std::cout << "add event to epoll " << std::endl;
