@@ -9,7 +9,7 @@ public:
     virtual bool AddListener(uint64_t sock);
     virtual void Loop();
 
-    virtual void OnAccet(uint64_t sock);
+    virtual void OnAccept(uint64_t sock);
 protected:
     static int32_t _unique_epoll_handler;
 };

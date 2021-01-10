@@ -10,7 +10,7 @@ public:
     virtual bool AddListener(uint64_t sock) = 0;
     virtual void Loop() = 0;
 
-    virtual void OnAccet(uint64_t sock) = 0;
+    virtual void OnAccept(uint64_t sock) = 0;
 };
 
 #endif

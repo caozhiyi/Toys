@@ -48,12 +48,12 @@ void CEpollPerThread::Loop()  {
         std::cout <<"epoll_wait weak up " << std::endl;
         for (size_t i = 0; i < res; i++) {
             uint64_t sock = event_vec[i].data.u64;
-            OnAccet(sock);
+            OnAccept(sock);
         }
     }
 }
 
-void CEpollPerThread::OnAccet(uint64_t sock)  {
+void CEpollPerThread::OnAccept(uint64_t sock)  {
     sockaddr_in client_addr;
     socklen_t addr_size = 0;
     int new_sock = accept(sock,  (sockaddr*)&client_addr, &addr_size);
