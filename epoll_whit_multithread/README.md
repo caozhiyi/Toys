@@ -7,8 +7,8 @@
 + unique_listener_multi_epoll： 一个监听socket对应多个epoll句柄，每个线程一个epoll句柄
 + reuse_port_unique_epoll：     reuse_port多个监听socket对应一个epoll句柄，放到多个线程epoll_wait
 + reuse_port_multi_epoll：      reuse_port多个监听socket对应多个epoll句柄，每个线程一个epoll句柄
-+ unique_listener_unique_exclusive_epoll： 一个监听socket开启EPOLLEXCLUSIVE，对应一个epoll句柄，放到多个线程epoll_wait
-+ unique_listener_multi_exclusive_epoll：  一个监听socket开启EPOLLEXCLUSIVE，对应多个epoll句柄，每个线程一个epoll句柄
++ unique_listener_unique_exclusive_epoll： 一个监听socket设置EPOLLEXCLUSIVE标识，对应一个epoll句柄，放到多个线程epoll_wait
++ unique_listener_multi_exclusive_epoll：  一个监听socket设置EPOLLEXCLUSIVE标识，对应多个epoll句柄，每个线程一个epoll句柄
 
 ## 结果
 | 监听socket个数 | epoll句柄个数 | 线程数 | 唤醒线程数 |  成功accept线程数 |
