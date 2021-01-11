@@ -27,7 +27,9 @@ UniqueListenerMultiExclusiveEpollSrc = unique_listener_multi_exclusive_epoll.cpp
 UniqueListenerUniqueExclusiveEpoll = unique_listener_unique_exclusive_epoll
 UniqueListenerUniqueExclusiveEpollSrc = unique_listener_unique_exclusive_epoll.cpp
 
-all: $(ReusePortMultiEpoll) $(ReusePortUniqueEpoll) $(UniqueListenerMultiEpoll) $(UniqueListenerUniqueEpoll) $(UniqueListenerMultiExclusiveEpoll) $(UniqueListenerUniqueExclusiveEpoll)
+binarys = $(ReusePortMultiEpoll) $(ReusePortUniqueEpoll) $(UniqueListenerMultiEpoll) $(UniqueListenerUniqueEpoll) $(UniqueListenerMultiExclusiveEpoll) $(UniqueListenerUniqueExclusiveEpoll)
+
+all: $(binarys)
 
 $(ReusePortMultiEpoll):$(OBJS) $(ReusePortMultiEpollSrc)
 	$(CC) $^ -o $@  $(TARGET)  $(CCFLAGS) $(INCLUDES)
@@ -51,4 +53,4 @@ $(UniqueListenerUniqueExclusiveEpoll):$(OBJS) $(UniqueListenerUniqueExclusiveEpo
 	$(CC) -c $< -o $@ $(CCFLAGS) $(INCLUDES) 
 
 clean:
-	rm -rf $(OBJS) *.o $(ReusePortMultiEpoll) $(ReusePortUniqueEpoll) $(UniqueListenerMultiEpoll) $(UniqueListenerUniqueEpoll) $(UniqueListenerMultiExclusiveEpoll) $(UniqueListenerUniqueExclusiveEpoll)
+	rm -rf $(OBJS) *.o $(binarys)
