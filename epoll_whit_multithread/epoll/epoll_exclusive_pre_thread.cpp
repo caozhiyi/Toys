@@ -19,7 +19,7 @@ CEpollExclusivePerThread::~CEpollExclusivePerThread() {
 bool CEpollExclusivePerThread::AddListener(uint64_t sock) {
     epoll_event *event = new epoll_event;
     event->data.u64 = sock;
-    event->events |= EPOLLIN|EPOLLOUT|EPOLLRDHUP|EPOLLEXCLUSIVE;
+    event->events = EPOLLIN|EPOLLOUT|EPOLLEXCLUSIVE;
     int res = epoll_ctl(_epoll_handler, EPOLL_CTL_ADD, sock, event);
     if (res == -1) {
         std::cout << "add event to epoll faild! error " << errno << std::endl;
