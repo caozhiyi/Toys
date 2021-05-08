@@ -5,7 +5,7 @@
 #include "common/Singleton.h"
 
 // singleton hook virtual table function by this point.
-// virtual table function type: typedef int(__fastcall *hook_func_type)(TestOriClass* this_pt);
+// virtual table function type: typedef int(__thiscall *hook_func_type)(TestOriClass* this_pt);
 // hook function: int __fastcall HookNotifyUI(TestOriClass* this_pt, DWORD _EDX) { }
 template<typename C = int>
 class SingletonVTHookWarp:
