@@ -44,43 +44,24 @@ public:
             if (target > nums[target_index]) {
                 if (nums[target_index] < nums[0] && target >= nums[0]) {
                     right = target_index - 1;
-
                 } else {
                     left = target_index + 1;
                 }
 
             } else if (target < nums[target_index]) {
-                
-            }
-             
-        }
-        
-    }
+                if (nums[target_index] > nums[nums.size() - 1] && target <= nums[nums.size() - 1]) {
+                    left = target_index + 1;
 
-    int binarySearch(std::vector<int>& nums, int start, int end, int target) {
-        if (start > end) {
-            return -1;
-        }
-        
-        int target_index = (start + end) / 2;
-        if (target > nums[target_index]) {
-            if (nums[target_index] < nums[start] && target >= nums[start]) {
-                return binarySearch(nums, start, target_index - 1, target);
+                } else {
+                    right = target_index - 1;
+                }
 
             } else {
-                return binarySearch(nums, target_index + 1, end, target);
+                ret = target_index;
+                break;
             }
-            
-        } else if (target < nums[target_index]) {
-            if (nums[target_index] > nums[end] && target <= nums[end]) {
-                return binarySearch(nums, target_index + 1, end, target);
-
-            } else {
-                return binarySearch(nums, start, target_index - 1, target);
-            }
-
-        } else {
-            return target_index;
         }
+        
+        return ret;
     }
 };
