@@ -14,6 +14,7 @@ public:
         int right = nums.size() - 1;
         int remove_count = 0;
         while (left <= right) {
+            // find left equal value
             while (left <= right) {
                 if (nums[left] == val) {
                     remove_count++;
@@ -23,6 +24,7 @@ public:
                     left++;
                 }
             }
+            // set left value to right
             if (left <= right) {
                 nums[left] = nums[right];
                 right--;
