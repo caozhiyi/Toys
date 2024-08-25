@@ -6,48 +6,44 @@
 #include <vector>
 #include <string>
 #include <algorithm>
-#include <unordered_set>
 
 // @lc code=start
 class Solution {
 public:
     std::vector<std::vector<int>> threeSum(std::vector<int>& nums) {
-        std::vector<std::vector<int>> ret;
-        if (nums.size() < 3) {
-            return ret;
-        }
-        
-        std::unordered_set<std::string> unique_set;
+        int size = nums.size();
+        if (size < 3)   return {};          // 特判
 
-        std::sort(nums.begin(), nums.end());
+        std::vector<std::vector<int>>res;  // 保存结果（所有不重复的三元组）
+        std::sort(nums.begin(), nums.end());// 排序（默认递增）
+        for (int i = 0; i < size; i++) {     // 固定第一个数，转化为求两数之和
+            if (nums[i] > 0)    
+                return res; // 第一个数大于 0，后面都是递增正数，不可能相加为零了
 
-        if (nums[0] > 0 || nums[nums.size() - 1] < 0) {
-            return ret;
-        }
-        
-        auto left = nums.begin();
-        auto right = nums.end()--;
-        while (left != right) {
-            int left_value = *left;
-            int right_value = *right;
-            int target = -(left_value + right_value);
-            if (target > 0) {
-                right--;
+            // 去重：如果此数已经选取过，跳过
+            if (i > 0 && nums[i] == nums[i-1])  
+                continue;
+            // 双指针在nums[i]后面的区间中寻找和为0-nums[i]的另外两个数
+            int left = i + 1;
+            int right = size - 1;
+            while (left < right) {
+                if (nums[left] + nums[right] > -nums[i])
+                    right--;    // 两数之和太大，右指针左移
+                else if (nums[left] + nums[right] < -nums[i])
+                    left++;     // 两数之和太小，左指针右移
+                else {
+                    // 找到一个和为零的三元组，添加到结果中，左右指针内缩，继续寻找
+                    res.push_back(std::vector<int>{nums[i], nums[left], nums[right]});
 
-            } else {
-                left++;
-            }
-            
-            if (std::binary_search(left, right, target)) {
-                std::string unique_str = std::to_string(left_value) +  std::to_string(target)
-                 + std::to_string(right_value);
-                if (unique_set.find(unique_str) != unique_set.end()) {
-                    unique_set.insert(unique_str);
-                    ret.emplace_back(std::vector<int>{left_value, target, right_value});
+                    left++;
+                    right--;
+                    // 去重：第二个数和第三个数也不重复选取
+                    while (left < right && nums[left] == nums[left-1])  left++;
+                    while (left < right && nums[right] == nums[right+1]) right--;
                 }
             }
         }
-        return ret;
+        return res;
     }
 };
 // @lc code=end
