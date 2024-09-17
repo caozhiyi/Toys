@@ -4,6 +4,7 @@
 
 //Definition for a binary tree node.
 #include <vector>
+#include <unordered_map>
 struct TreeNode {
     int val;
     TreeNode *left;
@@ -16,33 +17,38 @@ struct TreeNode {
 class Solution {
 public:
     TreeNode* buildTree(std::vector<int>& preorder, std::vector<int>& inorder) {
+        for (int i = 0; i < inorder.size(); i++) {
+            inorder_map_[inorder[i]] = i;
+        }
+        
+        return subBuildTree(preorder, inorder, 0, preorder.size() - 1, 0, inorder.size() - 1);
+    }
+
+    TreeNode* subBuildTree(std::vector<int>& preorder, std::vector<int>& inorder,
+        int preorder_left, int preorder_right,
+        int inorder_left, int inorder_right) {
+        
+        if (preorder_left > preorder_right) {
+            return nullptr;
+        }
+
+        // build root
         TreeNode* root = new TreeNode;
-        auto iter1 = preorder.begin();
-        auto iter2 = preorder.begin();
-        for (; iter1 != preorder.end(); iter1++) {
-            root->val = *iter1;
+        root->val = preorder[preorder_left];
 
-            for (auto iter = iter2; iter != preorder.end(); iter++) {
-                if (*iter != root->val) {
-                    continue;
-                }
-            }
-        }
-    }
+        // find left tree node count
+        int root_index_in_inorder = inorder_map_[preorder[preorder_left]];
+        int left_count = root_index_in_inorder - inorder_left;
 
-    TreeNode* buildLeft(std::vector<int>::iterator inorder_start, std::vector<int>::iterator inorder_end, std::vector<int>::iterator& preorder_iter) {
-        if (inorder_start == inorder_end) {
-            TreeNode* root = new TreeNode(*inorder_start);
-            return root;
-        }
-        
-    }
+        root->left = subBuildTree(preorder, inorder,
+            preorder_left + 1, preorder_left + left_count,
+            inorder_left, root_index_in_inorder - 1);
 
-    TreeNode* buildRight(std::vector<int>::iterator inorder_start, std::vector<int>::iterator inorder_end) {
-        if (inorder_start == inorder_end) {
-            TreeNode* root = new TreeNode(*inorder_start);
-            return root;
-        }
-        
+        root->right = subBuildTree(preorder, inorder,
+            preorder_left + left_count + 1, preorder_right,
+            root_index_in_inorder + 1, inorder_right);
+        return root;
     }
+private:
+    std::unordered_map<int, int> inorder_map_; // value->index
 };
