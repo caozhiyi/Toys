@@ -9,111 +9,59 @@ Note: The input is always valid. You may assume that evaluating the queries will
 
 Note: The variables that do not occur in the list of equations are undefined, so the answer cannot be determined for them.
 */
+
 #include <vector>
 #include <string>
-#include <unordered_set>
+#include <queue>
 #include <unordered_map>
-
+using namespace std;
 class Solution {
-private:
-class Node {
 public:
-    std::unordered_map<std::string, Node*> next;
-    double relationship;
-    std::string key;
-
-public:
-    Node(const std::string& from) {
-        key = from;
-    }
-
-    void addNext(const std::string& from, const std::string& to, double relationship) {
-        Node* node = new Node(to);
-        node->relationship = relationship;
-        next[to] = node;
-    }
-
-    Node* find(const std::string& from) {
-        if (next.count(from)) {
-            return next[from];
+    vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& values, vector<vector<string>>& queries) {
+        unordered_map<string, unordered_map<string, double>> graph;
+        int n = equations.size();
+        for (int i = 0; i < n; i++) {
+            string u = equations[i][0];
+            string v = equations[i][1];
+            double weight = values[i];
+            graph[u][v] = weight;
+            graph[v][u] = 1.0 / weight;
         }
-        if (next.empty()) {
-            return nullptr;
-        }
-        for (auto iter = next.begin(); iter != next.end(); iter++) {
-            if (iter->second->find(from)) {
-                return iter->second;
+        int m = queries.size();
+        vector<double> results(m, -1.0);
+        for (int i = 0; i < m; i++) {
+            string start = queries[i][0];
+            string target = queries[i][1];
+            if (!graph.count(start) || !graph.count(target)) {
+                continue;
+            }
+            if (start == target) {
+                results[i] = 1.0;
+                continue;
+            }
+            queue<pair<string, double>> q;
+            unordered_map<string, bool> visited;
+            q.push({start, 1.0});
+            visited[start] = true;
+            while (!q.empty()) {
+                string curr = q.front().first;
+                double currVal = q.front().second;
+                q.pop();
+                if (curr == target) {
+                    results[i] = currVal;
+                    break;
+                }
+                for (auto neighbor : graph[curr]) {
+                    string next = neighbor.first;
+                    double nextVal = neighbor.second;
+                    if (!visited[next]) {
+                        visited[next] = true;
+                        q.push({next, currVal * nextVal});
+                    }
+                }
             }
         }
-        return nullptr;
-    }
-
-    double queryPath(const std::string& to) {
-        if (next.count(to)) {
-            return relationship;
-        }
-
-        if (next.empty()) {
-            return -1;
-        }
-        double ret = queryPath(to);
-        if (ret < 0) {
-            return -1;
-        }
-        return relationship * ret;
+        return results;
     }
 };
 
-
-class NodeGroup {
-private:
-    std::unordered_map<std::string, Node*> roots;
-public:
-    void addNext(const std::string& from, const std::string& to, double relationship) {
-        if (roots.count(from)) {
-            roots[from]->addNext(from, to, relationship);
-            return;
-        }
-        for (auto iter = roots.begin(); iter != roots.end(); iter++) {
-            auto node = iter->second->find(from);
-            if (node) {
-                node->addNext(from, to, relationship);
-                return;
-            }
-        }
-        Node* node = new Node(to);
-        node->relationship = relationship;
-        roots[from] = node;
-    }
-
-    double calc(const std::string& from, const std::string& to) {
-        if (roots.count(from)) {
-            return roots[from]->queryPath(to);
-        }
-        for (auto iter = roots.begin(); iter != roots.end(); iter++) {
-            auto node = iter->second->find(from);
-            if (node) {
-                return node->queryPath(to);
-            }
-        }
-        return -1;
-    }
-};
-
-public:
-    std::vector<double> calcEquation(std::vector<std::vector<std::string>>& equations,
-        std::vector<double>& values, std::vector<std::vector<std::string>>& queries) {
-        
-        NodeGroup group;
-        for (int i = 0; i < equations.size(); i++) {
-            group.addNext(equations[i][0], equations[i][1], values[i]);
-            group.addNext(equations[i][1], equations[i][0], 1 / values[i]);
-        }
-        
-        std::vector<double> ret;
-        for (size_t i = 0; i < queries.size(); i++) {
-            ret.push_back(group.calc(queries[i][0], queries[i][1]));
-        }
-        return ret;
-    }
-};
