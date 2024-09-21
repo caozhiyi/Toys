@@ -1,3 +1,8 @@
+/*
+Given a sorted array of distinct integers and a target value, return the index if the target is found. If not, return the index where it would be if it were inserted in order.
+
+You must write an algorithm with O(log n) runtime complexity.
+*/
 #include <vector>
 
 class Solution {
@@ -12,9 +17,13 @@ public:
             if (target > nums[temp_index]) {
                 left = temp_index + 1;
 
-            } else if (target <= nums[temp_index]) {
+            } else if (target < nums[temp_index]) {
                 right = temp_index - 1;
                 target_index = temp_index;
+                
+            } else {
+                target_index = temp_index;
+                break;
             }
         }
         

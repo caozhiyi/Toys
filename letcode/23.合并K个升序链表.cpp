@@ -1,3 +1,7 @@
+/*
+You are given an array of k linked-lists lists, each linked-list is sorted in ascending order.
+Merge all the linked-lists into one sorted linked-list and return it.
+*/
 #include <map>
 #include <vector>
 
@@ -45,5 +49,69 @@ public:
             tamp_map.erase(remove_val);
         }
         return head;
+    }
+};
+
+class Solution1 {
+public:
+    ListNode* mergeKLists(std::vector<ListNode*>& lists) {
+        return mergeKLists(lists, 0, lists.size() - 1);
+    }
+
+    ListNode* mergeKLists(std::vector<ListNode*>& lists, int left, int right) {
+        if (left > right) {
+            return nullptr;
+        }
+        
+        if (left == right) {
+            return lists[left];
+        }
+
+        if (left + 1 == right) {
+            return mergeTwoLists(lists[left], lists[right]);
+        }
+        
+        return mergeTwoLists(mergeKLists(lists, left, (left + right) / 2),
+                             mergeKLists(lists, (left + right) / 2 + 1, right));
+    }
+
+    ListNode* mergeTwoLists(ListNode* left, ListNode* right) {
+        ListNode* ret = nullptr;
+        ListNode* cur = nullptr;
+        ListNode* target = nullptr;
+        while (left != nullptr && right != nullptr) {
+            if (left->val < right->val) {
+                target = left;
+                left = left->next;
+
+            } else {
+                target = right;
+                right = right->next;
+            }
+            
+            if (ret == nullptr) {
+                ret = target;
+                cur = target;
+            } else {
+                cur->next = target;
+                cur = target;
+            }
+        }
+        
+        if (left != nullptr) {
+            if (ret == nullptr) {
+                ret = left;
+            } else {
+                cur->next = left;
+            }
+        }
+        if (right != nullptr) {
+            if (ret == nullptr) {
+                ret = right;
+            } else {
+                cur->next = right;
+            }
+        }
+        return ret;
     }
 };

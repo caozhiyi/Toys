@@ -1,7 +1,6 @@
 /*
- * @lc app=leetcode.cn id=9 lang=cpp
- *
- * [9] 回文数
+Given an integer x, return true if x is a 
+palindrome , and false otherwise.
  */
 #include <limits>
 // @lc code=start
@@ -32,3 +31,16 @@ public:
 };
 // @lc code=end
 
+#include <string>
+class Solution {
+public:
+    bool isPalindrome(int x) {
+        std::string str = std::to_string(x);
+        for (int i = 0; i < str.size() / 2; i++) {
+            if (str[i] != str[str.size() - i -1]) {
+                return false;
+            }
+        }
+        return true;
+    }
+};
