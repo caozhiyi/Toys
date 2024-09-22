@@ -1,8 +1,14 @@
 /*
-给你链表的头节点 head ，每 k 个节点一组进行翻转，请你返回修改后的链表。
-k 是一个正整数，它的值小于或等于链表的长度。如果节点总数不是 k 的整数倍，那么请将最后剩余的节点保持原有顺序。
-你不能只是单纯的改变节点内部的值，而是需要实际进行节点交换。
+Given the head of a linked list, reverse the nodes of the list k at a time, and return the modified list.
+
+k is a positive integer and is less than or equal to the length of the linked list. If the number of nodes is not a multiple of k then left-out nodes, in the end, should remain as it is.
+
+You may not alter the values in the list's nodes, only nodes themselves may be changed.
 */
+
+#include <vector>
+
+using namespace std;
 
 struct ListNode {
     int val;
@@ -15,6 +21,76 @@ struct ListNode {
 class Solution {
 public:
     ListNode* reverseKGroup(ListNode* head, int k) {
-        
+        vector<pair<ListNode*, ListNode*>> nodes;
+
+        ListNode* cur = head;
+        int count = 1;
+        while (cur && cur->next) {
+            cur = cur->next;
+            count++;
+
+            if (count == k) {
+                ListNode* cur_start = head;
+                ListNode* end = cur;
+
+                cur = cur->next;
+                head = cur;
+                if (cur) {
+                    count = 1;
+
+                }
+                else {
+                    count = 0;
+                }
+                reverseGroup(cur_start, end);
+                nodes.push_back({ end, cur_start });
+            }
+        }
+
+        if (count > 0) {
+            nodes.push_back({ head, cur });
+        }
+
+        ListNode* new_head = nullptr;
+        ListNode* tail = nullptr;
+        for (auto iter = nodes.begin(); iter != nodes.end(); iter++) {
+            if (new_head == nullptr) {
+                new_head = iter->first;
+                tail = iter->second;
+
+            }
+            else {
+                tail->next = iter->first;
+                tail = iter->second;
+            }
+        }
+        return new_head;
+    }
+
+    void reverseGroup(ListNode* head, ListNode* end) {
+        if (head == end) {
+            return;
+        }
+
+        if (head->next == end) {
+            head->next = nullptr;
+            end->next = head;
+            return;
+        }
+
+        ListNode* left = head;
+        ListNode* mid = left->next;
+        ListNode* right = mid->next;
+        ListNode* real_end = end->next;
+        while (mid != real_end) {
+            mid->next = left;
+
+            left = mid;
+            mid = right;
+            if (right) {
+                right = right->next;
+            }
+        }
+        head->next = nullptr;
     }
 };

@@ -3,79 +3,59 @@
 */
 #include <string>
 #include <unordered_map>
-class Snapshot {
-public:
-    Snapshot() {}
-    Snapshot(const std::string& s) {
-        for (size_t i = 0; i < s.size(); i++) {
-            _map[s[i]]++;
-        }
-    }
-
-    void add(char s) {
-        _map[s]++;
-    }
-
-    void remove(char s) {
-        auto iter = _map.find(s);
-        if (iter != _map.end()) {
-            iter->second--;
-            if (iter->second <= 0) {
-                _map.erase(iter);
-            }
-        }
-    }
-
-    bool contine(char s) {
-        return _map.count(s) > 0;
-    }
-
-    bool contine(Snapshot& s) {
-        if (_map.size() < s._map.size()) {
-            return false;
-        }
-
-        for (auto iter = s._map.begin(); iter != s._map.end(); iter++) {
-            auto find_iter = _map.find(iter->first);
-            if (find_iter != _map.end() && find_iter->second >= iter->second) {
-                continue;
-            }
-            return false;
-        }
-        return true;
-    }
-
-private:
-    std::unordered_map<char, int> _map; // char -> times
-};
 
 class Solution {
 public:
     std::string minWindow(std::string s, std::string t) {
-        Snapshot target_snoapshot(t);
-
-        int min_start = -1;
-        int min_end = s.size() + 1;
-        int start = 0;
-        int end = 0;
-        Snapshot cur_snoapshot;
-        std::string ret;
-        while (end < s.size()) {
-            cur_snoapshot.add(s[end]);
-            while (cur_snoapshot.contine(target_snoapshot)) {
-                if (min_end - min_start > end - start) {
-                    min_start = start;
-                    min_end = end;
-                    ret = s.substr(start, end - start + 1);
-                }
-                cur_snoapshot.remove(s[start]);
-                start++;
-            }
-            end++;
+        std::unordered_map<char, int> t_map;
+        for (int i = 0; i < t.size(); i++) {
+            t_map[t[i]]++;
         }
-        if (min_start == -1) {
+        
+        int target_left = 0;
+        int target_right = 100000;
+
+        int left = 0;
+        int right = 0;
+        std::unordered_map<char, int> s_map;
+        while (right < s.size()) {
+            s_map[s[right]]++;
+
+            while (check(s_map, t_map)) {
+                if (target_right - target_left > right - left) {
+                    target_left = left;
+                    target_right = right;
+                }
+                auto iter = s_map.find(s[left]);
+                iter->second--;
+                if (iter->second == 0) {
+                    s_map.erase(iter);
+                }
+                left++;
+            }
+            right++;
+        }
+        if (target_right == 100000) {
             return "";
         }
-        return ret;
+        
+        return s.substr(target_left, target_right - target_left + 1);
+    }
+
+    bool check(std::unordered_map<char, int>& s_map, std::unordered_map<char, int>& t_map) {
+        if (s_map.size() < t_map.size()) {
+            return false;
+        }
+        
+        for (auto iter = t_map.begin(); iter != t_map.end(); iter++) {
+            auto s_iter = s_map.find(iter->first);
+            if (s_iter == s_map.end()) {
+                return false;
+            }
+            if (s_iter->second < iter->second) {
+                return false;
+            }
+        }
+        return true;
     }
 };
